@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import FamilySection from "@/components/family-section";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -11,6 +12,13 @@ export default async function HomePage() {
   if (!user) {
     redirect("/login");
   }
+
+  // Fetch all family profiles
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("*")
+    .order("role", { ascending: true })
+    .order("created_at", { ascending: true });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -119,6 +127,9 @@ export default async function HomePage() {
               <p className="text-gray-500">Coming soon...</p>
             </div>
           </div>
+
+          {/* Meet the Family Section */}
+          <FamilySection profiles={profiles || []} currentUserId={user.id} />
         </div>
 
         {/* Footer with Logout */}

@@ -161,6 +161,7 @@ npm install
    - Run `supabase/migrations/001_initial_schema.sql`
    - Run `supabase/migrations/002_storage_setup.sql`
    - Run `supabase/migrations/003_backfill_existing_profiles.sql` (if you have existing users)
+   - Run `supabase/migrations/005_add_profile_fields.sql` (for Family Profiles feature)
 
 2. **Verify Tables**
 
@@ -204,8 +205,13 @@ User profile information linked to `auth.users`
 - `email` (TEXT) - User email
 - `name` (TEXT) - User name
 - `role` (TEXT) - 'father', 'mother', 'son', 'daughter', 'parent', 'child'
+- `photo_url` (TEXT) - URL to profile photo in Supabase Storage (added in migration 005)
+- `date_of_birth` (DATE) - Date of birth for age calculation (added in migration 005)
+- `bio` (TEXT) - Optional biography/description (added in migration 005)
 - `created_at` (TIMESTAMPTZ)
 - `updated_at` (TIMESTAMPTZ)
+
+**Indexes:** `date_of_birth` (added in migration 005)
 
 **Auto-creation:** Trigger creates profile on user signup
 
@@ -474,6 +480,53 @@ All tables have RLS enabled with policies:
 
 ---
 
+### ✅ 7. Family Profiles
+
+**Status:** Complete
+
+**Features:**
+
+- View all family member profiles
+- "Meet the Family" section on home page
+- Dedicated Family page (`/family`)
+- Profile photo upload (JPG, PNG, GIF, max 2MB)
+- Edit profile information:
+  - Name
+  - Role (Father, Mother, Son, Daughter, Parent, Child)
+  - Date of birth (for age calculation)
+  - Bio/description
+- Automatic age calculation from date of birth
+- Color-coded role badges
+- Profile photo with fallback to initial letter
+- Responsive grid layout
+- API routes (GET, PUT, Photo Upload)
+
+**Files:**
+
+- `app/family/page.tsx`
+- `app/family/family-page-client.tsx`
+- `app/family/profile-edit-form.tsx`
+- `components/family-section.tsx`
+- `components/family-member-card.tsx`
+- `app/api/profiles/route.ts`
+- `app/api/profiles/[id]/route.ts`
+- `app/api/profiles/[id]/photo/route.ts`
+- `lib/utils/age.ts`
+
+**Database Migration:**
+
+- `supabase/migrations/005_add_profile_fields.sql`
+
+**UI:**
+
+- Family member cards with photos
+- Profile editing modal
+- Photo upload with preview
+- Age display
+- Role badges
+
+---
+
 ## API Endpoints
 
 ### Authentication
@@ -514,6 +567,12 @@ All tables have RLS enabled with policies:
 - `POST /api/memories` - Create new memory
 - `PUT /api/memories/[id]` - Update memory note
 - `DELETE /api/memories/[id]` - Delete memory and photo
+
+### Profiles
+
+- `GET /api/profiles` - List all family profiles
+- `PUT /api/profiles/[id]` - Update profile (own profile only)
+- `POST /api/profiles/[id]/photo` - Upload profile photo (own profile only)
 
 ### Request/Response Examples
 

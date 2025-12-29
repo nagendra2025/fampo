@@ -18,6 +18,7 @@ export default async function Navigation() {
     { href: "/notes", label: "Notes", icon: "📝" },
     { href: "/announcements", label: "Announcements", icon: "📢" },
     { href: "/memories", label: "Memories", icon: "📸" },
+    { href: "/family", label: "Family", icon: "👨‍👩‍👧‍👦" },
   ];
 
   return (

@@ -24,6 +24,12 @@ This directory contains detailed documentation for each feature implemented in t
    - Supabase Storage integration
    - Image configuration
 
+4. **[Family Profiles](./FAMILY_PROFILES.md)** - Family Profiles feature
+   - Profile display and management
+   - Photo upload functionality
+   - Age calculation
+   - Role-based display
+
 ## Documentation Structure
 
 Each feature documentation includes:
