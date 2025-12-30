@@ -50,7 +50,7 @@ export default async function HomePage() {
             Welcome to <AnimatedRasna className="inline-block" />
           </h1>
           <p className="text-xl text-gray-600">
-            Your family dashboard for coordination, reminders, and memories
+            Your family dashboard for coordination, reminders, and memories!
           </p>
         </header>
 
@@ -81,11 +81,11 @@ export default async function HomePage() {
               {/* Greeting */}
               <div className="flex-1">
                 <h2 className="mb-2 text-3xl font-semibold text-gray-800">
-                  Hello, {displayName}!
+                  Hello, {displayName}!!
                 </h2>
                 <p className="text-lg text-gray-600">
                   Everything your family needs is right here. Choose where you'd
-                  like to go:
+                  like to go!!!
                 </p>
               </div>
             </div>
