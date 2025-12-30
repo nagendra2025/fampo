@@ -4,6 +4,7 @@ import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import MemoryForm from "./memory-form";
 import MemoryCard from "./memory-card";
+import SuccessMessage from "@/components/success-message";
 
 interface Memory {
   id: string;
@@ -23,6 +24,7 @@ export default function MemoriesClient({
   const [memories, setMemories] = useState<Memory[]>(initialMemories);
   const [showForm, setShowForm] = useState(false);
   const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const refreshMemories = async () => {
     const response = await fetch("/api/memories");
@@ -45,6 +47,8 @@ export default function MemoriesClient({
     if (response.ok) {
       await refreshMemories();
       setShowForm(false);
+      setSuccessMessage("Memory created successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -64,6 +68,9 @@ export default function MemoriesClient({
     if (response.ok) {
       await refreshMemories();
       setEditingMemory(null);
+      setShowForm(false); // Close the form after successful update
+      setSuccessMessage("Memory updated successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -116,6 +123,14 @@ export default function MemoriesClient({
 
   return (
     <div className="space-y-8">
+      {/* Success Message */}
+      {successMessage && (
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => setSuccessMessage(null)}
+        />
+      )}
+
       {/* Add Memory Button */}
       <div className="flex justify-end">
         <button

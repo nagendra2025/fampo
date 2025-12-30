@@ -12,7 +12,7 @@ interface Note {
 
 interface NoteFormProps {
   note?: Note | null;
-  onSubmit: (data: Omit<Note, "id" | "created_by" | "created_at" | "updated_at">) => void;
+  onSubmit: (data: Omit<Note, "id" | "created_by" | "created_at" | "updated_at">) => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -21,6 +21,7 @@ export default function NoteForm({ note, onSubmit, onClose }: NoteFormProps) {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<"emergency" | "health" | "school" | "general">("general");
   const [isReadonlyForKids, setIsReadonlyForKids] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (note) {
@@ -31,7 +32,7 @@ export default function NoteForm({ note, onSubmit, onClose }: NoteFormProps) {
     }
   }, [note]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim() || !content.trim()) {
@@ -39,12 +40,17 @@ export default function NoteForm({ note, onSubmit, onClose }: NoteFormProps) {
       return;
     }
 
-    onSubmit({
-      title: title.trim(),
-      content: content.trim(),
-      category,
-      is_readonly_for_kids: isReadonlyForKids,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        is_readonly_for_kids: isReadonlyForKids,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -131,9 +137,16 @@ export default function NoteForm({ note, onSubmit, onClose }: NoteFormProps) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700"
+              disabled={isSubmitting}
+              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {note ? "Update" : "Create"} Note
+              {isSubmitting
+                ? note
+                  ? "Updating..."
+                  : "Creating..."
+                : note
+                  ? "Update Note"
+                  : "Create Note"}
             </button>
           </div>
         </form>

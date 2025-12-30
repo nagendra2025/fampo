@@ -4,6 +4,7 @@ import { useState } from "react";
 import { format, parseISO, isPast, isToday } from "date-fns";
 import TaskForm from "./task-form";
 import TaskCard from "./task-card";
+import SuccessMessage from "@/components/success-message";
 
 interface Task {
   id: string;
@@ -28,6 +29,7 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>("all");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const refreshTasks = async () => {
     const response = await fetch("/api/tasks");
@@ -49,6 +51,8 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
     if (response.ok) {
       await refreshTasks();
       setShowForm(false);
+      setSuccessMessage("Task created successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -68,6 +72,9 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
     if (response.ok) {
       await refreshTasks();
       setEditingTask(null);
+      setShowForm(false); // Close the form after successful update
+      setSuccessMessage("Task updated successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -120,6 +127,14 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
 
   return (
     <div className="space-y-8">
+      {/* Success Message */}
+      {successMessage && (
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => setSuccessMessage(null)}
+        />
+      )}
+
       {/* Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Filter */}

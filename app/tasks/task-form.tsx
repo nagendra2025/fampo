@@ -12,7 +12,7 @@ interface Task {
 
 interface TaskFormProps {
   task?: Task | null;
-  onSubmit: (data: Omit<Task, "id" | "created_by" | "created_at" | "updated_at" | "completed" | "completed_at">) => void;
+  onSubmit: (data: Omit<Task, "id" | "created_by" | "created_at" | "updated_at" | "completed" | "completed_at">) => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -20,6 +20,7 @@ export default function TaskForm({ task, onSubmit, onClose }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [assignedTo, setAssignedTo] = useState<"father" | "mother" | "son" | "daughter" | "all">("all");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -29,7 +30,7 @@ export default function TaskForm({ task, onSubmit, onClose }: TaskFormProps) {
     }
   }, [task]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -37,11 +38,16 @@ export default function TaskForm({ task, onSubmit, onClose }: TaskFormProps) {
       return;
     }
 
-    onSubmit({
-      title: title.trim(),
-      due_date: dueDate || null,
-      assigned_to: assignedTo,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        title: title.trim(),
+        due_date: dueDate || null,
+        assigned_to: assignedTo,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -111,9 +117,16 @@ export default function TaskForm({ task, onSubmit, onClose }: TaskFormProps) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700"
+              disabled={isSubmitting}
+              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {task ? "Update" : "Create"} Task
+              {isSubmitting
+                ? task
+                  ? "Updating..."
+                  : "Creating..."
+                : task
+                  ? "Update Task"
+                  : "Create Task"}
             </button>
           </div>
         </form>

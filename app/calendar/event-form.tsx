@@ -13,7 +13,7 @@ interface Event {
 
 interface EventFormProps {
   event?: Event | null;
-  onSubmit: (data: Omit<Event, "id" | "created_by" | "created_at" | "updated_at">) => void;
+  onSubmit: (data: Omit<Event, "id" | "created_by" | "created_at" | "updated_at">) => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -23,6 +23,7 @@ export default function EventForm({ event, onSubmit, onClose }: EventFormProps) 
   const [time, setTime] = useState("");
   const [notes, setNotes] = useState("");
   const [category, setCategory] = useState<"school" | "health" | "travel" | "family">("family");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (event) {
@@ -38,7 +39,7 @@ export default function EventForm({ event, onSubmit, onClose }: EventFormProps) 
     }
   }, [event]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim() || !date) {
@@ -46,13 +47,18 @@ export default function EventForm({ event, onSubmit, onClose }: EventFormProps) 
       return;
     }
 
-    onSubmit({
-      title: title.trim(),
-      date,
-      time: time || null,
-      notes: notes.trim() || null,
-      category,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        title: title.trim(),
+        date,
+        time: time || null,
+        notes: notes.trim() || null,
+        category,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -149,9 +155,16 @@ export default function EventForm({ event, onSubmit, onClose }: EventFormProps) 
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700"
+              disabled={isSubmitting}
+              className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {event ? "Update" : "Create"} Event
+              {isSubmitting
+                ? event
+                  ? "Updating..."
+                  : "Creating..."
+                : event
+                  ? "Update Event"
+                  : "Create Event"}
             </button>
           </div>
         </form>
