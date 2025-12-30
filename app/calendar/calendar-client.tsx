@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { format, parseISO, isPast, isToday, isTomorrow } from "date-fns";
 import EventForm from "./event-form";
 import EventCard from "./event-card";
+import SuccessMessage from "@/components/success-message";
 
 interface Event {
   id: string;
@@ -25,6 +26,7 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const refreshEvents = async () => {
     const response = await fetch("/api/events");
@@ -44,6 +46,8 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
     if (response.ok) {
       await refreshEvents();
       setShowForm(false);
+      setSuccessMessage("Event created successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -63,6 +67,9 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
     if (response.ok) {
       await refreshEvents();
       setEditingEvent(null);
+      setShowForm(false); // Close the form after successful update
+      setSuccessMessage("Event updated successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -110,6 +117,14 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
 
   return (
     <div className="space-y-8">
+      {/* Success Message */}
+      {successMessage && (
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => setSuccessMessage(null)}
+        />
+      )}
+
       {/* Add Event Button */}
       <div className="flex justify-end">
         <button

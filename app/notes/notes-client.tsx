@@ -3,6 +3,7 @@
 import { useState } from "react";
 import NoteForm from "./note-form";
 import NoteCard from "./note-card";
+import SuccessMessage from "@/components/success-message";
 
 interface Note {
   id: string;
@@ -27,6 +28,7 @@ export default function NotesClient({ initialNotes, isParent }: NotesClientProps
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const refreshNotes = async () => {
     const response = await fetch("/api/notes");
@@ -48,6 +50,8 @@ export default function NotesClient({ initialNotes, isParent }: NotesClientProps
     if (response.ok) {
       await refreshNotes();
       setShowForm(false);
+      setSuccessMessage("Note created successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -67,6 +71,9 @@ export default function NotesClient({ initialNotes, isParent }: NotesClientProps
     if (response.ok) {
       await refreshNotes();
       setEditingNote(null);
+      setShowForm(false); // Close the form after successful update
+      setSuccessMessage("Note updated successfully!");
+      setTimeout(() => setSuccessMessage(null), 2000);
     } else {
       const error = await response.json();
       alert(`Error: ${error.error}`);
@@ -108,6 +115,14 @@ export default function NotesClient({ initialNotes, isParent }: NotesClientProps
 
   return (
     <div className="space-y-8">
+      {/* Success Message */}
+      {successMessage && (
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => setSuccessMessage(null)}
+        />
+      )}
+
       {/* Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Filter */}

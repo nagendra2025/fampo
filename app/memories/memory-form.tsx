@@ -11,7 +11,7 @@ interface Memory {
 
 interface MemoryFormProps {
   memory?: Memory | null;
-  onSubmit: (data: { photo_url: string; note: string | null }) => void;
+  onSubmit: (data: { photo_url: string; note: string | null }) => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -90,7 +90,7 @@ export default function MemoryForm({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!memory && !photoUrl) {
@@ -98,10 +98,15 @@ export default function MemoryForm({
       return;
     }
 
-    onSubmit({
-      photo_url: photoUrl,
-      note: note.trim() || null,
-    });
+    setUploading(true);
+    try {
+      await onSubmit({
+        photo_url: photoUrl,
+        note: note.trim() || null,
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -220,7 +225,13 @@ export default function MemoryForm({
               disabled={uploading || (!memory && !photoUrl)}
               className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {memory ? "Update" : "Create"} Memory
+              {uploading
+                ? memory
+                  ? "Updating..."
+                  : "Creating..."
+                : memory
+                  ? "Update Memory"
+                  : "Create Memory"}
             </button>
           </div>
         </form>
