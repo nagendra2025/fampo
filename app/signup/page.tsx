@@ -74,13 +74,6 @@ export default function SignupPage() {
       setLoading(false);
       return;
     }
-
-    if (!profilePicture) {
-      console.log("Validation failed: Profile picture missing");
-      setError("Please upload a profile picture");
-      setLoading(false);
-      return;
-    }
     
     if (!email || !password || !gender || !dateOfBirth || !nickName) {
       console.log("Validation failed: Missing required fields");
@@ -103,7 +96,10 @@ export default function SignupPage() {
       if (punchLine) {
         formData.append("punchLine", punchLine);
       }
-      formData.append("file", profilePicture);
+      // Only append file if provided (photo is optional)
+      if (profilePicture) {
+        formData.append("file", profilePicture);
+      }
 
       console.log("Sending signup request to /api/auth/signup");
       const response = await fetch("/api/auth/signup", {
@@ -209,7 +205,7 @@ export default function SignupPage() {
             {/* Profile Picture Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Profile Picture <span className="text-red-500">*</span>
+                Profile Picture <span className="text-gray-400 text-xs">(Optional)</span>
               </label>
               <div className="flex items-center gap-4">
                 {preview ? (
@@ -235,7 +231,6 @@ export default function SignupPage() {
                     onChange={handleFileSelect}
                     className="hidden"
                     id="profile-picture"
-                    required
                   />
                   <label
                     htmlFor="profile-picture"

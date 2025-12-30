@@ -5,7 +5,7 @@
 -- 
 -- User to DELETE:
 -- - nagendrakumar.a99@gmail.com
--- - UID: 5e118247-276e-4fd8-a08b-c771feef965a
+-- - UID: 0c59db0b-9284-4ca9-82dc-200ca2e03ef4
 --
 -- WARNING: This permanently deletes all user data!
 -- There is no undo!
@@ -25,10 +25,10 @@
 
 SELECT id, email, created_at
 FROM auth.users
-WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE id = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Should return 1 row with:
--- - id: 5e118247-276e-4fd8-a08b-c771feef965a
+-- - id: 0c59db0b-9284-4ca9-82dc-200ca2e03ef4
 -- - email: nagendrakumar.a99@gmail.com
 
 -- ============================================
@@ -39,32 +39,32 @@ WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
 -- Check profile
 SELECT COUNT(*) as profile_count 
 FROM profiles 
-WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE id = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check events created by this user
 SELECT COUNT(*) as event_count 
 FROM events 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check tasks created by this user
 SELECT COUNT(*) as task_count 
 FROM tasks 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check notes created by this user
 SELECT COUNT(*) as note_count 
 FROM notes 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check announcements created by this user
 SELECT COUNT(*) as announcement_count 
 FROM announcements 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check memories created by this user
 SELECT COUNT(*) as memory_count 
 FROM memories 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- ============================================
 -- STEP 3: DELETE THE USER
@@ -84,7 +84,7 @@ WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
 -- You must manually delete them in Supabase Storage (see Step 5).
 
 DELETE FROM auth.users
-WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE id = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- ============================================
 -- STEP 4: VERIFY DELETION
@@ -94,37 +94,37 @@ WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
 -- Check auth.users (should return 0 rows)
 SELECT id, email 
 FROM auth.users 
-WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE id = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check profiles table (should return 0 rows)
 SELECT id, email 
 FROM profiles 
-WHERE id = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE id = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check events table (should return 0 rows)
 SELECT COUNT(*) as event_count 
 FROM events 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check tasks table (should return 0 rows)
 SELECT COUNT(*) as task_count 
 FROM tasks 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check notes table (should return 0 rows)
 SELECT COUNT(*) as note_count 
 FROM notes 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check announcements table (should return 0 rows)
 SELECT COUNT(*) as announcement_count 
 FROM announcements 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- Check memories table (should return 0 rows)
 SELECT COUNT(*) as memory_count 
 FROM memories 
-WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
+WHERE created_by = '0c59db0b-9284-4ca9-82dc-200ca2e03ef4';
 
 -- ============================================
 -- STEP 5: MANUAL STORAGE CLEANUP
@@ -135,7 +135,7 @@ WHERE created_by = '5e118247-276e-4fd8-a08b-c771feef965a';
 -- Instructions:
 -- 1. Go to Supabase Dashboard → Storage → 'memories' bucket
 -- 2. Navigate to the 'profiles' folder
--- 3. Delete the folder: profiles/5e118247-276e-4fd8-a08b-c771feef965a/
+-- 3. Delete the folder: profiles/0c59db0b-9284-4ca9-82dc-200ca2e03ef4/
 -- 4. Navigate to the 'memories' folder (if it exists)
 -- 5. Delete any folders/files associated with this user ID
 --
@@ -146,8 +146,8 @@ SELECT
 FROM storage.objects
 WHERE bucket_id = 'memories'
 AND (
-  name LIKE 'profiles/5e118247-276e-4fd8-a08b-c771feef965a/%' OR
-  name LIKE 'memories/5e118247-276e-4fd8-a08b-c771feef965a/%'
+  name LIKE 'profiles/0c59db0b-9284-4ca9-82dc-200ca2e03ef4/%' OR
+  name LIKE 'memories/0c59db0b-9284-4ca9-82dc-200ca2e03ef4/%'
 )
 ORDER BY created_at DESC;
 
