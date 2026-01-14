@@ -12,6 +12,10 @@ interface Profile {
   photo_url: string | null;
   date_of_birth: string | null;
   bio: string | null;
+  phone_number: string | null;
+  notifications_enabled: boolean | null;
+  whatsapp_enabled: boolean | null;
+  sms_enabled: boolean | null;
 }
 
 interface FamilyPageClientProps {
