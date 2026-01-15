@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     // Get app-level settings
     const { data: appSettings } = await supabase
       .from("app_settings")
-      .select("id, notifications_enabled, enable_whatsapp")
+      .select("id, notifications_enabled, enable_sms, enable_whatsapp")
       .limit(1)
       .single();
 
