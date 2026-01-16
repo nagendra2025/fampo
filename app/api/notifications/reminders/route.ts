@@ -9,7 +9,21 @@ import { addDays, format } from "date-fns";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron or external service)
 // It checks for events and tasks due tomorrow and sends reminders
+
+// Force dynamic execution - prevents caching and ensures cron jobs run every time
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
+  // Log immediately - even before try/catch to ensure we see if endpoint is called
+  const now = new Date();
+  const tomorrow = addDays(now, 1);
+  const tomorrowDateStr = format(tomorrow, "yyyy-MM-dd");
+  
+  console.log(`[CRON] ===== REMINDERS ENDPOINT CALLED ===== ${format(now, "yyyy-MM-dd HH:mm:ss")} UTC`);
+  console.log(`[CRON] Request URL: ${request.url}`);
+  console.log(`[CRON] Request headers:`, Object.fromEntries(request.headers.entries()));
+  console.log(`[CRON] Looking for events/tasks on: ${tomorrowDateStr}`);
+  
   try {
     // Optional: Add API key authentication for cron jobs
     // Note: Vercel Cron doesn't send Authorization headers automatically
@@ -17,19 +31,17 @@ export async function GET(request: Request) {
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
     
+    console.log(`[CRON] CRON_SECRET exists: ${!!cronSecret}`);
+    console.log(`[CRON] Auth header exists: ${!!authHeader}`);
+    
     // Only enforce CRON_SECRET if it's set AND an auth header is provided
     // This allows Vercel Cron to work without the header, but still protects manual access
     if (cronSecret && authHeader && authHeader !== `Bearer ${cronSecret}`) {
+      console.log(`[CRON] Unauthorized - returning 401`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Log execution for debugging
-    const now = new Date();
-    const tomorrow = addDays(now, 1);
-    const tomorrowDateStr = format(tomorrow, "yyyy-MM-dd");
-    
-    console.log(`[CRON] Reminders endpoint called at ${format(now, "yyyy-MM-dd HH:mm:ss")} UTC`);
-    console.log(`[CRON] Looking for events/tasks on: ${tomorrowDateStr}`);
+    console.log(`[CRON] Authentication passed, proceeding...`);
 
     const supabase = await createClient();
 

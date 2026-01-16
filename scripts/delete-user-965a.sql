@@ -165,3 +165,4 @@ ORDER BY created_at DESC;
 -- [ ] Verified user no longer appears in Supabase Auth → Users
 
 
+

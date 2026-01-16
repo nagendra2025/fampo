@@ -48,3 +48,4 @@ CREATE TRIGGER update_app_settings_updated_at
 COMMENT ON TABLE app_settings IS 'Application-wide settings. Should contain only one row.';
 
 
+

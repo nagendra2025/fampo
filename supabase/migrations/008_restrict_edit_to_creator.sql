@@ -84,3 +84,4 @@ CREATE POLICY "Users can delete their own memories"
   USING (auth.role() = 'authenticated' AND created_by = auth.uid());
 
 
+

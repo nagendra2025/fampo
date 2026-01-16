@@ -193,3 +193,4 @@ Result: ✅ Notifications sent to all 5 family members!
 - Still protected: Manual access with wrong secret is blocked
 - Vercel Cron: Can execute without headers
 
+

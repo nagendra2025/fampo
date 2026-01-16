@@ -297,3 +297,4 @@ For issues or questions:
 - Check Supabase logs for database errors
 
 
+

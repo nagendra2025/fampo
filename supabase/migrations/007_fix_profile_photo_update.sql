@@ -26,3 +26,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION public.update_profile_photo_url(UUID, TEXT) TO authenticated;
 
 
+

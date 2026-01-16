@@ -13,3 +13,4 @@ WHERE id = 'memories';
 -- Public access only allows viewing, not modifying
 
 
+

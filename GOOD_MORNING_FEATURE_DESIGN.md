@@ -394,3 +394,4 @@ ADD COLUMN good_morning_enabled BOOLEAN DEFAULT true;
 
 **Ready to implement!** 🚀
 
+

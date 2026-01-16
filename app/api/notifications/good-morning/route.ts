@@ -12,21 +12,33 @@ import { format } from "date-fns";
  * 
  * Schedule: 8:00 AM UTC daily (via Vercel Cron)
  */
+
+// Force dynamic execution - prevents caching and ensures cron jobs run every time
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
+  // Log immediately - even before try/catch to ensure we see if endpoint is called
+  const now = new Date();
+  console.log(`[Good Morning] ===== ENDPOINT CALLED ===== ${format(now, "yyyy-MM-dd HH:mm:ss")} UTC`);
+  console.log(`[Good Morning] Request URL: ${request.url}`);
+  console.log(`[Good Morning] Request headers:`, Object.fromEntries(request.headers.entries()));
+  
   try {
     // Optional: Add API key authentication for cron jobs
     // Note: Vercel Cron doesn't send Authorization headers automatically
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
     
+    console.log(`[Good Morning] CRON_SECRET exists: ${!!cronSecret}`);
+    console.log(`[Good Morning] Auth header exists: ${!!authHeader}`);
+    
     // Only enforce CRON_SECRET if it's set AND an auth header is provided
     if (cronSecret && authHeader && authHeader !== `Bearer ${cronSecret}`) {
+      console.log(`[Good Morning] Unauthorized - returning 401`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Log execution for debugging
-    const now = new Date();
-    console.log(`[Good Morning] Endpoint called at ${format(now, "yyyy-MM-dd HH:mm:ss")} UTC`);
+    console.log(`[Good Morning] Authentication passed, proceeding...`);
 
     const supabase = await createClient();
 
