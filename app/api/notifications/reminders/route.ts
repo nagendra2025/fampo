@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createCronClient } from "@/lib/supabase/cron";
 import { NextResponse } from "next/server";
 import {
   sendNotificationToUser,
@@ -43,14 +43,35 @@ export async function GET(request: Request) {
 
     console.log(`[CRON] Authentication passed, proceeding...`);
 
-    const supabase = await createClient();
+    // Use cron client (no cookies/session required)
+    let supabase;
+    try {
+      supabase = createCronClient();
+      console.log(`[CRON] Supabase client created successfully`);
+    } catch (error: any) {
+      console.error(`[CRON] Failed to create Supabase client:`, error);
+      return NextResponse.json(
+        { error: `Failed to create Supabase client: ${error.message}` },
+        { status: 500 }
+      );
+    }
 
     // Get app-level settings
-    const { data: appSettings } = await supabase
+    console.log(`[CRON] Fetching app settings...`);
+    const { data: appSettings, error: appSettingsError } = await supabase
       .from("app_settings")
       .select("id, notifications_enabled, enable_sms, enable_whatsapp")
       .limit(1)
       .single();
+
+    if (appSettingsError) {
+      console.error(`[CRON] Error fetching app settings:`, appSettingsError);
+      return NextResponse.json(
+        { error: `Failed to fetch app settings: ${appSettingsError.message}` },
+        { status: 500 }
+      );
+    }
+    console.log(`[CRON] App settings fetched:`, appSettings);
 
     // Check app-level notifications first
     if (appSettings && !appSettings.notifications_enabled) {
