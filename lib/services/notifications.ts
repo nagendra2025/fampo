@@ -20,68 +20,6 @@ export function isRateLimitError(error: any): boolean {
   );
 }
 
-// Send WhatsApp message
-export async function sendWhatsAppMessage(
-  to: string,
-  message: string
-): Promise<{ success: boolean; error?: string; rateLimited?: boolean; twilioError?: any }> {
-  try {
-    const client = getTwilioClient();
-    const from = process.env.TWILIO_WHATSAPP_FROM;
-
-    if (!from) {
-      throw new Error("TWILIO_WHATSAPP_FROM not configured");
-    }
-
-    // Ensure phone number starts with whatsapp: prefix
-    const toNumber = to.startsWith("whatsapp:") ? to : `whatsapp:${to}`;
-    const fromNumber = from.startsWith("whatsapp:") ? from : `whatsapp:${from}`;
-
-    console.log(`[WhatsApp] Attempting to send to: ${toNumber}, from: ${fromNumber}`);
-
-    const twilioResponse = await client.messages.create({
-      body: message,
-      from: fromNumber,
-      to: toNumber,
-    });
-
-    console.log(`[WhatsApp] Twilio response:`, {
-      sid: twilioResponse.sid,
-      status: twilioResponse.status,
-      errorCode: twilioResponse.errorCode,
-      errorMessage: twilioResponse.errorMessage,
-    });
-
-    // Check if message was actually queued/sent
-    // Status can be: queued, sending, sent, delivered, failed, etc.
-    if (twilioResponse.status === "failed" || twilioResponse.errorCode) {
-      return {
-        success: false,
-        error: twilioResponse.errorMessage || `Twilio error: ${twilioResponse.errorCode}`,
-        twilioError: {
-          code: twilioResponse.errorCode,
-          message: twilioResponse.errorMessage,
-          status: twilioResponse.status,
-        },
-      };
-    }
-
-    return { success: true };
-  } catch (error: any) {
-    console.error("[WhatsApp] Send error:", error);
-    const isRateLimit = isRateLimitError(error);
-    return {
-      success: false,
-      error: error.message || "Failed to send WhatsApp message",
-      rateLimited: isRateLimit,
-      twilioError: {
-        code: error.code,
-        message: error.message,
-        status: error.status,
-      },
-    };
-  }
-}
 
 // Send SMS message
 export async function sendSMSMessage(
@@ -118,14 +56,13 @@ export async function sendSMSMessage(
 export interface AppSettings {
   notifications_enabled: boolean;
   enable_sms: boolean;
-  enable_whatsapp: boolean;
 }
 
 // Send notification to a user (respects both app-level and user-level preferences)
 export async function sendNotificationToUser(
   phoneNumber: string | null,
   userNotificationsEnabled: boolean,
-  userWhatsappEnabled: boolean,
+  userWhatsappEnabled: boolean, // Kept for backward compatibility but ignored
   userSmsEnabled: boolean,
   message: string,
   appSettings?: AppSettings | null
@@ -150,27 +87,6 @@ export async function sendNotificationToUser(
   // Check user-level settings
   if (!phoneNumber || !userNotificationsEnabled) {
     return results;
-  }
-
-  // Send WhatsApp if enabled at both app and user level
-  if (userWhatsappEnabled && (!appSettings || appSettings.enable_whatsapp)) {
-    const whatsappResult = await sendWhatsAppMessage(phoneNumber, message);
-    results.whatsappDetails = whatsappResult;
-    if (whatsappResult.success) {
-      results.whatsapp = true;
-    } else {
-      if (whatsappResult.rateLimited) {
-        results.rateLimited = true;
-        results.errors.push(`WhatsApp: Rate limit exceeded - daily message limit reached`);
-      } else {
-        const errorMsg = whatsappResult.error || "Unknown error";
-        results.errors.push(`WhatsApp: ${errorMsg}`);
-        // Log detailed error for debugging
-        if (whatsappResult.twilioError) {
-          console.error(`[WhatsApp] Detailed error for ${phoneNumber}:`, whatsappResult.twilioError);
-        }
-      }
-    }
   }
 
   // Send SMS if enabled at both app and user level

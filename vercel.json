@@ -2,11 +2,11 @@
   "crons": [
     {
       "path": "/api/notifications/good-morning",
-      "schedule": "0 8 * * *"
+      "schedule": "0 13 * * *"
     },
     {
       "path": "/api/notifications/reminders",
-      "schedule": "0 9 * * *"
+      "schedule": "15 13 * * *"
     }
   ]
 }

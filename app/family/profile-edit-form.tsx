@@ -14,7 +14,6 @@ interface Profile {
   bio: string | null;
   phone_number: string | null;
   notifications_enabled: boolean | null;
-  whatsapp_enabled: boolean | null;
   sms_enabled: boolean | null;
 }
 
@@ -35,7 +34,6 @@ export default function ProfileEditForm({
   const [bio, setBio] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [whatsappEnabled, setWhatsappEnabled] = useState(true);
   const [smsEnabled, setSmsEnabled] = useState(true);
   const [photoUrl, setPhotoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -49,7 +47,6 @@ export default function ProfileEditForm({
     setBio(profile.bio || "");
     setPhoneNumber(profile.phone_number || "");
     setNotificationsEnabled(profile.notifications_enabled ?? true);
-    setWhatsappEnabled(profile.whatsapp_enabled ?? true);
     setSmsEnabled(profile.sms_enabled ?? true);
     setPhotoUrl(profile.photo_url || "");
     setPreview(profile.photo_url);
@@ -117,7 +114,6 @@ export default function ProfileEditForm({
       bio: bio.trim() || null,
       phone_number: validatedPhoneNumber,
       notifications_enabled: notificationsEnabled,
-      whatsapp_enabled: whatsappEnabled,
       sms_enabled: smsEnabled,
       photo_url: photoUrl || null,
     });
@@ -293,29 +289,16 @@ export default function ProfileEditForm({
               </label>
 
               {notificationsEnabled && (
-                <>
-                  <label className="flex items-center gap-3 pl-8">
-                    <input
-                      type="checkbox"
-                      checked={whatsappEnabled}
-                      onChange={(e) => setWhatsappEnabled(e.target.checked)}
-                      disabled={!notificationsEnabled}
-                      className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
-                    />
-                    <span className="text-sm text-gray-700">WhatsApp Notifications</span>
-                  </label>
-
-                  <label className="flex items-center gap-3 pl-8">
-                    <input
-                      type="checkbox"
-                      checked={smsEnabled}
-                      onChange={(e) => setSmsEnabled(e.target.checked)}
-                      disabled={!notificationsEnabled}
-                      className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
-                    />
-                    <span className="text-sm text-gray-700">SMS Notifications</span>
-                  </label>
-                </>
+                <label className="flex items-center gap-3 pl-8">
+                  <input
+                    type="checkbox"
+                    checked={smsEnabled}
+                    onChange={(e) => setSmsEnabled(e.target.checked)}
+                    disabled={!notificationsEnabled}
+                    className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+                  />
+                  <span className="text-sm text-gray-700">SMS Notifications</span>
+                </label>
               )}
             </div>
           </div>

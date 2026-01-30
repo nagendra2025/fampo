@@ -14,14 +14,14 @@ export async function GET() {
     // Check app settings
     const { data: appSettings, error: appSettingsError } = await supabase
       .from("app_settings")
-      .select("id, notifications_enabled, enable_sms, enable_whatsapp, updated_at")
+      .select("id, notifications_enabled, enable_sms, updated_at")
       .limit(1)
       .single();
 
     // Check profiles with phone numbers
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, name, phone_number, notifications_enabled, whatsapp_enabled, sms_enabled")
+      .select("id, name, phone_number, notifications_enabled, sms_enabled")
       .not("phone_number", "is", null);
 
     // Check events for tomorrow
@@ -55,7 +55,6 @@ export async function GET() {
       TWILIO_ACCOUNT_SID: !!process.env.TWILIO_ACCOUNT_SID,
       TWILIO_AUTH_TOKEN: !!process.env.TWILIO_AUTH_TOKEN,
       TWILIO_SMS_FROM: !!process.env.TWILIO_SMS_FROM,
-      TWILIO_WHATSAPP_FROM: !!process.env.TWILIO_WHATSAPP_FROM,
       CRON_SECRET: !!process.env.CRON_SECRET,
     };
 
@@ -71,7 +70,6 @@ export async function GET() {
         ? {
             notifications_enabled: appSettings.notifications_enabled,
             enable_sms: appSettings.enable_sms,
-            enable_whatsapp: appSettings.enable_whatsapp,
             updated_at: appSettings.updated_at,
           }
         : null,
@@ -84,7 +82,6 @@ export async function GET() {
           name: p.name,
           hasPhone: !!p.phone_number,
           notifications_enabled: p.notifications_enabled,
-          whatsapp_enabled: p.whatsapp_enabled,
           sms_enabled: p.sms_enabled,
         })) || [],
       },

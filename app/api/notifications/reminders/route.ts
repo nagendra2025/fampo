@@ -60,7 +60,7 @@ export async function GET(request: Request) {
     console.log(`[CRON] Fetching app settings...`);
     const { data: appSettings, error: appSettingsError } = await supabase
       .from("app_settings")
-      .select("id, notifications_enabled, enable_sms, enable_whatsapp")
+      .select("id, notifications_enabled, enable_sms")
       .limit(1)
       .single();
 
@@ -87,12 +87,12 @@ export async function GET(request: Request) {
       });
     }
 
-    console.log(`[CRON] App settings: notifications=${appSettings?.notifications_enabled}, sms=${appSettings?.enable_sms}, whatsapp=${appSettings?.enable_whatsapp}`);
+    console.log(`[CRON] App settings: notifications=${appSettings?.notifications_enabled}, sms=${appSettings?.enable_sms}`);
 
     // Get all family members with phone numbers and notification preferences
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, name, phone_number, notifications_enabled, whatsapp_enabled, sms_enabled")
+      .select("id, name, phone_number, notifications_enabled, sms_enabled")
       .not("phone_number", "is", null);
 
     if (profilesError) {
@@ -180,7 +180,7 @@ export async function GET(request: Request) {
             const result = await sendNotificationToUser(
               profile.phone_number,
               profile.notifications_enabled ?? true,
-              profile.whatsapp_enabled ?? true,
+              false, // WhatsApp disabled
               profile.sms_enabled ?? true,
               message,
               appSettings || null
@@ -196,7 +196,6 @@ export async function GET(request: Request) {
               eventTitle: event.title,
               profileId: profile.id,
               profileName: profile.name,
-              whatsapp: result.whatsapp,
               sms: result.sms,
               errors: result.errors,
             });
@@ -224,7 +223,7 @@ export async function GET(request: Request) {
             const result = await sendNotificationToUser(
               profile.phone_number,
               profile.notifications_enabled ?? true,
-              profile.whatsapp_enabled ?? true,
+              false, // WhatsApp disabled
               profile.sms_enabled ?? true,
               message,
               appSettings || null
@@ -234,7 +233,6 @@ export async function GET(request: Request) {
               taskTitle: task.title,
               profileId: profile.id,
               profileName: profile.name,
-              whatsapp: result.whatsapp,
               sms: result.sms,
               errors: result.errors,
             });
@@ -252,8 +250,8 @@ export async function GET(request: Request) {
     }
 
     const notificationsSent = {
-      events: results.events.filter((r) => r.whatsapp || r.sms).length,
-      tasks: results.tasks.filter((r) => r.whatsapp || r.sms).length,
+      events: results.events.filter((r) => r.sms).length,
+      tasks: results.tasks.filter((r) => r.sms).length,
     };
 
     console.log(`[CRON] Completed: ${notificationsSent.events} event notifications, ${notificationsSent.tasks} task notifications sent`);

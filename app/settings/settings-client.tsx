@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 interface AppSettings {
   notifications_enabled: boolean;
   enable_sms: boolean;
-  enable_whatsapp: boolean;
 }
 
 interface SettingsClientProps {
@@ -93,7 +92,7 @@ export default function SettingsClient({
         </div>
       </div>
 
-      {/* SMS and WhatsApp Toggles */}
+      {/* SMS Toggle */}
       {settings.notifications_enabled && (
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
           <h3 className="text-lg font-semibold text-gray-900">
@@ -124,38 +123,6 @@ export default function SettingsClient({
                 checked={settings.enable_sms}
                 onChange={(e) =>
                   setSettings({ ...settings, enable_sms: e.target.checked })
-                }
-                disabled={!settings.notifications_enabled}
-                className="peer sr-only disabled:opacity-50"
-              />
-              <div className="peer h-6 w-11 rounded-full bg-gray-300 transition-colors peer-checked:bg-indigo-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 peer-disabled:opacity-50"></div>
-              <div className="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform peer-checked:translate-x-5"></div>
-            </label>
-          </div>
-
-          {/* WhatsApp Toggle */}
-          <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4">
-            <div className="flex-1">
-              <label
-                htmlFor="enable_whatsapp"
-                className="block font-medium text-gray-900"
-              >
-                Enable WhatsApp Notifications
-              </label>
-              <p className="mt-1 text-sm text-gray-600">
-                Allow WhatsApp notifications to be sent via Twilio
-              </p>
-            </div>
-            <label className="relative inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                id="enable_whatsapp"
-                checked={settings.enable_whatsapp}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    enable_whatsapp: e.target.checked,
-                  })
                 }
                 disabled={!settings.notifications_enabled}
                 className="peer sr-only disabled:opacity-50"
@@ -212,13 +179,6 @@ export default function SettingsClient({
           in their profile settings. Notifications will only be sent if both
           application-level and user-level settings are enabled.
         </p>
-        {settings.notifications_enabled && (
-          <p className="text-sm text-blue-800 mt-2">
-            <strong>Rate Limit:</strong> Twilio trial accounts have a 50 messages/day
-            limit. If this limit is exceeded, notifications will be automatically
-            disabled and need to be manually re-enabled after the limit resets.
-          </p>
-        )}
       </div>
     </div>
   );

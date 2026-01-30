@@ -23,7 +23,6 @@ export default async function SettingsPage() {
   const settings = settingsData || {
     notifications_enabled: true,
     enable_sms: true,
-    enable_whatsapp: true,
   };
 
   return (

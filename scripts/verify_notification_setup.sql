@@ -10,7 +10,7 @@ SELECT
   is_nullable
 FROM information_schema.columns
 WHERE table_name = 'profiles' 
-  AND column_name IN ('phone_number', 'notifications_enabled', 'whatsapp_enabled', 'sms_enabled')
+  AND column_name IN ('phone_number', 'notifications_enabled', 'sms_enabled')
 ORDER BY column_name;
 
 -- 2. Check if app_settings table exists
@@ -28,7 +28,6 @@ SELECT
   id,
   notifications_enabled,
   enable_sms,
-  enable_whatsapp,
   updated_at,
   updated_by
 FROM app_settings;
@@ -40,7 +39,6 @@ SELECT
   email,
   phone_number,
   notifications_enabled,
-  whatsapp_enabled,
   sms_enabled
 FROM profiles
 ORDER BY created_at;
@@ -58,7 +56,6 @@ SELECT
   email,
   phone_number,
   notifications_enabled,
-  whatsapp_enabled,
   sms_enabled,
   CASE 
     WHEN phone_number IS NULL THEN '❌ No phone number'

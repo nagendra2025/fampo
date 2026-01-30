@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     // Get app-level settings
     const { data: appSettings } = await supabase
       .from("app_settings")
-      .select("id, notifications_enabled, enable_sms, enable_whatsapp")
+      .select("id, notifications_enabled, enable_sms")
       .limit(1)
       .single();
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     // Get all family members with phone numbers and notification preferences
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, name, phone_number, notifications_enabled, whatsapp_enabled, sms_enabled")
+      .select("id, name, phone_number, notifications_enabled, sms_enabled")
       .not("phone_number", "is", null);
 
     if (profilesError) {
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
         const result = await sendNotificationToUser(
           profile.phone_number,
           profile.notifications_enabled ?? true,
-          profile.whatsapp_enabled ?? true,
+          false, // WhatsApp disabled
           profile.sms_enabled ?? true,
           message,
           appSettings || null
@@ -114,10 +114,8 @@ export async function POST(request: Request) {
         results.push({
           profileId: profile.id,
           name: profile.name,
-          whatsapp: result.whatsapp,
           sms: result.sms,
           errors: result.errors,
-          whatsappDetails: result.whatsappDetails,
           smsDetails: result.smsDetails,
         });
       }
@@ -133,7 +131,7 @@ export async function POST(request: Request) {
 
     const response: any = {
       success: true,
-      sent: results.filter((r) => r.whatsapp || r.sms).length,
+      sent: results.filter((r) => r.sms).length,
       total: deduplicatedProfiles.length,
       results,
     };

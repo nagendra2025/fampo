@@ -28,7 +28,6 @@ export async function GET() {
           settings: {
             notifications_enabled: true,
             enable_sms: true,
-            enable_whatsapp: true,
           },
         });
       }
@@ -59,7 +58,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { notifications_enabled, enable_sms, enable_whatsapp } = body;
+    const { notifications_enabled, enable_sms } = body;
 
     // Validate input
     if (
@@ -79,20 +78,12 @@ export async function PUT(request: Request) {
       );
     }
 
-    if (enable_whatsapp !== undefined && typeof enable_whatsapp !== "boolean") {
-      return NextResponse.json(
-        { error: "enable_whatsapp must be a boolean" },
-        { status: 400 }
-      );
-    }
 
     // Build update object
     const updateData: any = {};
     if (notifications_enabled !== undefined)
       updateData.notifications_enabled = notifications_enabled;
     if (enable_sms !== undefined) updateData.enable_sms = enable_sms;
-    if (enable_whatsapp !== undefined)
-      updateData.enable_whatsapp = enable_whatsapp;
     updateData.updated_by = user.id;
 
     // Get existing settings to ensure row exists
@@ -123,7 +114,6 @@ export async function PUT(request: Request) {
         .insert({
           notifications_enabled: notifications_enabled ?? true,
           enable_sms: enable_sms ?? true,
-          enable_whatsapp: enable_whatsapp ?? true,
           updated_by: user.id,
         })
         .select()
