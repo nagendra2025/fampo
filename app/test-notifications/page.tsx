@@ -75,6 +75,35 @@ export default function TestNotificationsPage() {
     }
   };
 
+  const testGoodMorning = async () => {
+    // Warning: This will send REAL SMS messages to all family members
+    const confirmed = window.confirm(
+      "⚠️ WARNING: This will send REAL Good Morning SMS messages to ALL family members with SMS enabled.\n\n" +
+      "This is not a test - actual messages will be sent via Twilio.\n\n" +
+      "Do you want to continue?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const response = await fetch("/api/notifications/good-morning", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message || "Failed to test good morning notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
       <div className="mx-auto max-w-2xl">
@@ -107,6 +136,14 @@ export default function TestNotificationsPage() {
             >
               {loading ? "Running..." : "🔍 Run Diagnostics"}
             </button>
+
+            <button
+              onClick={testGoodMorning}
+              disabled={loading}
+              className="w-full rounded-lg bg-orange-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Sending..." : "🌅 Test Good Morning Notifications"}
+            </button>
           </div>
 
           {error && (
@@ -133,6 +170,29 @@ export default function TestNotificationsPage() {
                   </p>
                 </div>
               )}
+              
+              {/* Special display for Good Morning notifications */}
+              {result.quote && (
+                <div className="mb-4 rounded-lg bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 p-4">
+                  <h3 className="mb-2 text-sm font-semibold text-orange-900">
+                    🌅 Daily Quote ({result.quoteSource || "unknown source"})
+                  </h3>
+                  <p className="text-base italic text-orange-800 leading-relaxed">
+                    "{result.quote}"
+                  </p>
+                  {result.quoteError && (
+                    <p className="mt-2 text-xs text-orange-600">
+                      Note: {result.quoteError}
+                    </p>
+                  )}
+                  {result.messagesSent !== undefined && (
+                    <p className="mt-3 text-sm font-medium text-orange-900">
+                      ✅ {result.messagesSent} message{result.messagesSent !== 1 ? "s" : ""} sent to {result.profilesFound || 0} family member{result.profilesFound !== 1 ? "s" : ""}
+                    </p>
+                  )}
+                </div>
+              )}
+              
               <h3 className={`mb-2 font-semibold ${
                 result.rateLimitExceeded ? "text-yellow-900" : "text-green-900"
               }`}>Result:</h3>
@@ -150,6 +210,13 @@ export default function TestNotificationsPage() {
               <br />• Phone numbers added to user profiles
               <br />• Twilio credentials in `.env.local`
               <br />• App-level notifications enabled (Settings page)
+            </p>
+          </div>
+
+          <div className="rounded-lg bg-orange-50 border border-orange-200 p-4">
+            <p className="text-sm text-orange-800">
+              <strong>⚠️ Important:</strong> The "Test Good Morning Notifications" button will send <strong>REAL SMS messages</strong> to all family members. 
+              This is not a simulation - actual messages will be sent via Twilio if configured.
             </p>
           </div>
         </div>
