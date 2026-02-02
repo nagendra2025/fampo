@@ -50,7 +50,7 @@ export default async function HomePage() {
             Welcome to <AnimatedRasna className="inline-block" />
           </h1>
           <p className="text-xl text-gray-600">
-            Your family dashboard for coordination, reminders, and memories!
+            Your FAMily PlatfOrm dashboard for coordination, reminders, and memories!
           </p>
         </header>
 

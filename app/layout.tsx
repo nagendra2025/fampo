@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rasna - Family Dashboard",
-  description: "Your family dashboard for coordination, reminders, and memories",
+  title: "Fampo - FAMily PlatfOrm Dashboard",
+  description: "Your FAMily PlatfOrm dashboard for coordination, reminders, and memories",
 };
 
 export default function RootLayout({

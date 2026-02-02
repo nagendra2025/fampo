@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AnimatedRasna from "@/components/animated-rasna";
+import FampoLogo from "@/components/fampo-logo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -43,6 +44,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-8 shadow-lg">
         <div className="text-center">
+          <div className="mb-4 flex justify-center">
+            <FampoLogo size={64} />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome to <AnimatedRasna className="inline-block !text-3xl" />
           </h1>
