@@ -14,7 +14,7 @@ export default function AnimatedRasna({
     <span
       className={`font-bold ${!hasTextSize ? "text-5xl" : ""} animated-rasna ${className}`}
     >
-      RASNA
+      FAMPO
     </span>
   );
 }

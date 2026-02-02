@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AnimatedRasna from "@/components/animated-rasna";
+import FampoLogo from "@/components/fampo-logo";
 
 export default function LandingPage() {
   return (
@@ -7,11 +8,14 @@ export default function LandingPage() {
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
         <div className="mx-auto max-w-4xl text-center">
+          <div className="mb-6 flex justify-center">
+            <FampoLogo size={80} />
+          </div>
           <h1 className="mb-6 text-6xl font-bold text-gray-900">
             Welcome to <AnimatedRasna className="inline-block" />
           </h1>
           <p className="mb-4 text-2xl text-gray-700">
-            Your family dashboard for coordination, reminders, and memories
+            Your FAMily PlatfOrm dashboard for coordination, reminders, and memories
           </p>
           <p className="mb-12 text-lg text-gray-600">
             A calm, supportive space for your family to stay connected and

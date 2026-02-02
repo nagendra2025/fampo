@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import AnimatedRasna from "@/components/animated-rasna";
+import FampoLogo from "@/components/fampo-logo";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -189,6 +190,9 @@ export default function SignupPage() {
       <div className="mx-auto max-w-2xl">
         <div className="rounded-2xl bg-white p-8 shadow-lg">
           <div className="text-center mb-8">
+            <div className="mb-4 flex justify-center">
+              <FampoLogo size={64} />
+            </div>
             <h1 className="text-3xl font-bold text-gray-900">
               Join <AnimatedRasna className="inline-block !text-3xl" />
             </h1>
