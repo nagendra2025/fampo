@@ -50,7 +50,9 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome to <AnimatedRasna className="inline-block !text-3xl" />
           </h1>
-          <p className="mt-2 text-gray-600">Your family dashboard</p>
+          <p className="mt-2 text-gray-600">
+            Your <span className="font-bold">FAM</span>ily <span className="font-bold">P</span>latf<span className="font-bold">O</span>rm Dashboard
+          </p>
         </div>
 
         <div className="mt-8 space-y-6">
